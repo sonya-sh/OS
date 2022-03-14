@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <sys/syscall.h>
+
 
 void* handler(void *data);
 
@@ -20,7 +22,6 @@ int main(int argc, char *argv[]) {
 	pthread_t id;
 
 	for (int j = 0; j < n_threads; j++) {
-		
 		pthread_create(&id, NULL, handler, data);
 		pthread_join(id, NULL);
 	}
@@ -28,9 +29,9 @@ int main(int argc, char *argv[]) {
 }
 
 void* handler(void *data) {
-	pid_t gettid(void);
+
 	for (int i = 0; i < 10; i++) {
-		printf("привет, я процесс №%d\n", gettid());
+		printf("привет, я процесс №%d\n", syscall(SYS_gettid));
 	}
 	printf("\n");
 	pthread_exit(0);

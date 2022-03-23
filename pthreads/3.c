@@ -1,13 +1,15 @@
 /*
 
  Программа, аналогичная 2.с , но использующая синхронизацию для получения верного резултата.
- Синхронизация ограничивает доступ к разделяемым ресурсам на время их использования каким-либо потоком. 
+ Синхронизация ограничивает доступ к разделяемым ресурсам на время их использования каким-либо потоком.
 
  */
 
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
 long int sum = 0;
 pthread_mutex_t sumLock;
@@ -35,11 +37,13 @@ int main(int argc, char *argv[]) {
 }
 
 void* handler(void *data) {
-
-	for (long int j = 0; j < 1000000; j++) {
-		pthread_mutex_lock(&sumLock);
-		sum = sum + 1;
-		pthread_mutex_unlock(&sumLock);
+	for (int a = 0; a < 10; a++) {
+		printf("поток № %ld\n", syscall(SYS_gettid));
+		for (long int j = 0; j < 1000000; j++) {
+			pthread_mutex_lock(&sumLock);
+			sum = sum + 1;
+			pthread_mutex_unlock(&sumLock);
+		}
 	}
 	pthread_exit(0);
 }

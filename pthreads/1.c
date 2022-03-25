@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 void* handler(void *data) {
 
 	for (int i = 0; i < 10; i++) {
-		printf("привет, я процесс №%d\n", syscall(SYS_gettid));
+		printf("привет, я процесс №%ld\n", syscall(SYS_gettid));
 	}
 	printf("\n");
 	pthread_exit(0);
